@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Polls{% endblock %}
+{% block content %}
+
+{% if user.is_authenticated %}
+    Hi {{ user.username }}!
+    <p><a href="{% url 'logout' %}">Log out</a></p>
+    <br>
+    <h2><a href="{% url 'polls:create' %}">Create new poll</a></h2>
+    <br>
+    <h2>My polls</h2>
+    <ul>
+        {% for question in all_polls %}
+            {% if question.author_id == user.id %}
+                <a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a> Posted {{ question.pub_date }} by {{question.author }}<br>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+{% else %}
+    You are not logged in.<br>
+    <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'accounts:signup' %}">Sign up</a>
+
+    {% if latest_question_list %}
+    <h2>Example polls</h2>
+    <ul>
+        {% for question in latest_question_list %}
+            <a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a> Posted {{ question.pub_date }}<br>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No polls are available.</p>
+    {% endif %}
+{% endif %}
+{% endblock %}
+
